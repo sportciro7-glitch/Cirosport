@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CiroSport | Ropa Deportiva & Suplementos - Escazú</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #FF6B00;
+            --primary-dark: #E55A00;
+            --dark: #0A0A0A;
+            --dark-light: #141414;
+            --gray: #1A1A1A;
+            --text: #E5E5E5;
+            --text-muted: #888888;
+            --white: #FFFFFF;
+            --accent: #00D4FF;
+            --success: #00C853;
+            --whatsapp: #25D366;
+            --sinpe: #0066CC;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--dark); color: var(--text); overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--dark); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+        .loader { position: fixed; inset: 0; background: var(--dark); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s, visibility 0.5s; }
+        .loader.hidden { opacity: 0; visibility: hidden; }
+        .loader-spinner { width: 60px; height: 60px; border: 3px solid rgba(255,107,0,0.2); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .navbar { position: fixed; top: 0; width: 100%; z-index: 1000; padding: 15px 5%; transition: all 0.4s ease; background: transparent; }
+        .navbar.scrolled { background: rgba(10,10,10,0.95); backdrop-filter: blur(20px); padding: 12px 5%; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .nav-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo img { height: 50px; width: auto; border-radius: 8px; }
+        .logo-text { font-family: 'Oswald', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--white); letter-spacing: 1px; }
+        .logo-text span { color: var(--primary); }
+        .nav-links { display: flex; gap: 35px; list-style: none; }
+        .nav-links a { color: var(--text); text-decoration: none; font-size: 0.85rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; position: relative; }
+        .nav-links a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--primary); transition: width 0.3s; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover { color: var(--primary); }
+        .nav-actions { display: flex; gap: 18px; align-items: center; }
+        .btn-icon { background: none; border: none; color: var(--white); font-size: 1.2rem; cursor: pointer; transition: color 0.3s; position: relative; }
+        .btn-icon:hover { color: var(--primary); }
+        .cart-count { position: absolute; top: -8px; right: -8px; background: var(--primary); color: var(--white); font-size: 0.7rem; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .mobile-menu { display: none; font-size: 1.5rem; color: var(--white); cursor: pointer; }
+
+        .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.4s; }
+        .cart-overlay.active { opacity: 1; visibility: visible; }
+        .cart-sidebar { position: fixed; top: 0; right: -450px; width: 450px; max-width: 100%; height: 100vh; background: var(--dark-light); z-index: 2001; transition: right 0.4s ease; display: flex; flex-direction: column; border-left: 1px solid rgba(255,255,255,0.05); }
+        .cart-sidebar.active { right: 0; }
+        .cart-header { padding: 25px 30px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .cart-header h3 { font-family: 'Oswald', sans-serif; font-size: 1.3rem; color: var(--white); text-transform: uppercase; }
+        .cart-close { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; transition: color 0.3s; }
+        .cart-close:hover { color: var(--primary); }
+        .cart-items { flex: 1; overflow-y: auto; padding: 15px 30px; }
+        .cart-empty { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .cart-empty i { font-size: 4rem; margin-bottom: 20px; opacity: 0.3; }
+        .cart-item { display: flex; gap: 15px; padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,0.05); animation: slideInRight 0.3s ease; }
+        .cart-item-img { width: 70px; height: 70px; border-radius: 10px; object-fit: cover; }
+        .cart-item-info { flex: 1; }
+        .cart-item-title { font-size: 0.9rem; font-weight: 600; color: var(--white); margin-bottom: 3px; }
+        .cart-item-price { color: var(--primary); font-weight: 700; font-size: 0.95rem; }
+        .cart-item-qty { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+        .qty-btn { width: 26px; height: 26px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: var(--gray); color: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; transition: all 0.3s; }
+        .qty-btn:hover { background: var(--primary); border-color: var(--primary); }
+        .cart-item-remove { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; transition: color 0.3s; align-self: flex-start; }
+        .cart-item-remove:hover { color: #ff4444; }
+        .cart-footer { padding: 25px 30px; border-top: 1px solid rgba(255,255,255,0.05); background: var(--gray); }
+        .cart-subtotal { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
+        .cart-total { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 700; color: var(--white); margin-bottom: 15px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .cart-total-price { color: var(--primary); }
+        .btn-cart-checkout { width: 100%; padding: 14px; border-radius: 12px; background: var(--sinpe); color: var(--white); border: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-cart-checkout:hover { background: #0052a3; transform: translateY(-2px); }
+        .btn-whatsapp-cart { width: 100%; padding: 12px; border-radius: 12px; background: var(--whatsapp); color: var(--white); border: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; transition: all 0.3s; }
+        .btn-whatsapp-cart:hover { background: #128C7E; transform: translateY(-2px); }
+
+        .toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 3000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: var(--gray); border: 1px solid rgba(255,255,255,0.1); border-left: 4px solid var(--success); padding: 14px 22px; border-radius: 12px; display: flex; align-items: center; gap: 12px; color: var(--white); font-size: 0.9rem; box-shadow: 0 10px 40px rgba(0,0,0,0.4); animation: slideInRight 0.4s ease, fadeOut 0.4s ease 2.6s forwards; min-width: 280px; }
+        .toast i { color: var(--success); font-size: 1.1rem; }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeOut { to { opacity: 0; transform: translateX(50px); } }
+
+        .hero { min-height: 100vh; display: flex; align-items: center; position: relative; overflow: hidden; padding: 0 5%; }
+        .hero-bg { position: absolute; top: 0; right: 0; width: 60%; height: 100%; background: linear-gradient(135deg, rgba(255,107,0,0.1) 0%, rgba(0,0,0,0) 100%); clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%); }
+        .hero-grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; width: 100%; position: relative; z-index: 2; }
+        .hero-content { animation: fadeInUp 1s ease; }
+        .badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,107,0,0.15); border: 1px solid rgba(255,107,0,0.3); padding: 8px 20px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; color: var(--primary); margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; }
+        .badge i { animation: pulse 2s infinite; }
+        .hero h1 { font-family: 'Oswald', sans-serif; font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 700; line-height: 1.1; color: var(--white); margin-bottom: 20px; text-transform: uppercase; }
+        .hero h1 .highlight { color: var(--primary); display: block; }
+        .hero p { font-size: 1rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 30px; max-width: 480px; }
+        .hero-stats { display: flex; gap: 35px; margin-bottom: 30px; }
+        .stat { text-align: center; }
+        .stat-number { font-family: 'Oswald', sans-serif; font-size: 2.2rem; font-weight: 700; color: var(--primary); display: block; }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .hero-buttons { display: flex; gap: 15px; flex-wrap: wrap; }
+        .btn { padding: 14px 32px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: all 0.3s; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-primary { background: var(--primary); color: var(--white); box-shadow: 0 10px 30px rgba(255,107,0,0.3); }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-3px); box-shadow: 0 15px 40px rgba(255,107,0,0.4); }
+        .btn-outline { background: transparent; color: var(--white); border: 2px solid rgba(255,255,255,0.2); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-3px); }
+        .btn-whatsapp { background: var(--whatsapp); color: var(--white); box-shadow: 0 10px 30px rgba(37,211,102,0.3); }
+        .btn-whatsapp:hover { background: #128C7E; transform: translateY(-3px); }
+        .btn-sinpe { background: var(--sinpe); color: var(--white); box-shadow: 0 10px 30px rgba(0,102,204,0.3); }
+        .btn-sinpe:hover { background: #0052a3; transform: translateY(-3px); }
+        .hero-image { position: relative; animation: fadeInRight 1s ease; }
+        .hero-image img { width: 100%; height: 600px; object-fit: cover; border-radius: 20px; filter: brightness(0.9) contrast(1.1); }
+        .hero-image::before { content: ''; position: absolute; top: -15px; right: -15px; width: 100%; height: 100%; border: 2px solid var(--primary); border-radius: 20px; z-index: -1; opacity: 0.4; }
+        .floating-card { position: absolute; background: rgba(20,20,20,0.95); backdrop-filter: blur(10px); padding: 18px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .floating-card.card-1 { bottom: 60px; left: -30px; animation: float 6s ease-in-out infinite; }
+        .floating-card.card-2 { top: 50px; right: -20px; animation: float 6s ease-in-out infinite 2s; }
+        .floating-card h4 { font-size: 1.1rem; color: var(--white); margin-bottom: 3px; }
+        .floating-card p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
+        .floating-card .price { color: var(--primary); font-weight: 700; font-size: 1.1rem; margin-top: 6px; }
+
+        .categories-section { padding: 80px 5%; background: var(--dark-light); }
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-label { display: inline-block; color: var(--primary); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; margin-bottom: 12px; }
+        .section-title { font-family: 'Oswald', sans-serif; font-size: clamp(1.8rem, 3.5vw, 3rem); font-weight: 700; color: var(--white); text-transform: uppercase; }
+        .categories-grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .category-card { position: relative; height: 320px; border-radius: 18px; overflow: hidden; cursor: pointer; }
+        .category-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+        .category-card:hover img { transform: scale(1.1); }
+        .category-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 25px; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%); }
+        .category-overlay h3 { font-family: 'Oswald', sans-serif; font-size: 1.3rem; color: var(--white); text-transform: uppercase; margin-bottom: 5px; }
+        .category-overlay p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
+        .category-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-sm { padding: 8px 16px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; text-decoration: none; transition: all 0.3s; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-sm-primary { background: var(--primary); color: var(--white); }
+        .btn-sm-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .btn-sm-whatsapp { background: var(--whatsapp); color: var(--white); }
+        .btn-sm-whatsapp:hover { background: #128C7E; transform: translateY(-2px); }
+
+        .category-gallery { padding: 80px 5%; }
+        .category-gallery:nth-child(even) { background: var(--dark-light); }
+        .gallery-header { max-width: 1400px; margin: 0 auto 40px; display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 15px; }
+        .gallery-header-left { display: flex; align-items: center; gap: 15px; }
+        .gallery-icon { width: 50px; height: 50px; border-radius: 12px; background: rgba(255,107,0,0.15); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: var(--primary); }
+        .gallery-title-group h2 { font-family: 'Oswald', sans-serif; font-size: 1.7rem; color: var(--white); text-transform: uppercase; }
+        .gallery-title-group p { color: var(--text-muted); font-size: 0.9rem; }
+        .gallery-whatsapp { display: flex; align-items: center; gap: 8px; padding: 10px 20px; background: var(--whatsapp); color: var(--white); border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 0.85rem; transition: all 0.3s; }
+        .gallery-whatsapp:hover { background: #128C7E; transform: translateY(-2px); box-shadow: 0 10px 30px rgba(37,211,102,0.3); }
+        .gallery-grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .gallery-item { background: var(--gray); border-radius: 18px; overflow: hidden; transition: transform 0.4s, box-shadow 0.4s; }
+        .gallery-item:hover { transform: translateY(-8px); box-shadow: 0 25px 50px rgba(0,0,0,0.4); }
+        .gallery-item-img { position: relative; height: 260px; overflow: hidden; background: var(--dark-light); }
+        .gallery-item-img img { width: 100%; height: 100%; object-fit: contain; padding: 10px; transition: transform 0.5s; }
+        .gallery-item:hover .gallery-item-img img { transform: scale(1.05); }
+        .gallery-item-badge { position: absolute; top: 12px; left: 12px; padding: 5px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .gallery-item-info { padding: 18px; }
+        .gallery-item-info h4 { color: var(--white); font-size: 0.95rem; margin-bottom: 5px; }
+        .gallery-item-info p { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px; }
+        .gallery-item-price { color: var(--primary); font-weight: 700; font-size: 1.1rem; margin-bottom: 12px; }
+        .gallery-item-actions { display: flex; gap: 6px; }
+        .btn-add-cart { flex: 1; padding: 9px; border-radius: 10px; background: var(--primary); color: var(--white); border: none; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-add-cart:hover { background: var(--primary-dark); }
+        .btn-gallery-wa { padding: 9px 12px; border-radius: 10px; background: var(--whatsapp); color: var(--white); border: none; cursor: pointer; transition: all 0.3s; font-size: 0.9rem; }
+        .btn-gallery-wa:hover { background: #128C7E; }
+
+        .benefits { padding: 80px 5%; background: var(--dark-light); position: relative; overflow: hidden; }
+        .benefits::before { content: ''; position: absolute; top: -50%; left: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(255,107,0,0.1) 0%, transparent 70%); border-radius: 50%; }
+        .benefits-grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; position: relative; z-index: 2; }
+        .benefit-card { text-align: center; padding: 30px 15px; background: rgba(255,255,255,0.03); border-radius: 18px; border: 1px solid rgba(255,255,255,0.05); transition: all 0.4s; }
+        .benefit-card:hover { background: rgba(255,107,0,0.05); border-color: rgba(255,107,0,0.2); transform: translateY(-5px); }
+        .benefit-icon { width: 60px; height: 60px; margin: 0 auto 20px; background: rgba(255,107,0,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--primary); transition: all 0.4s; }
+        .benefit-card:hover .benefit-icon { background: var(--primary); color: var(--white); transform: rotateY(360deg); }
+        .benefit-card h3 { font-size: 1rem; color: var(--white); margin-bottom: 10px; font-weight: 600; }
+        .benefit-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+        .testimonials { padding: 80px 5%; }
+        .testimonials-grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+        .testimonial-card { background: var(--gray); padding: 35px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.05); transition: all 0.4s; }
+        .testimonial-card:hover { border-color: rgba(255,107,0,0.3); transform: translateY(-5px); }
+        .testimonial-stars { color: var(--primary); margin-bottom: 18px; font-size: 0.85rem; }
+        .testimonial-text { font-size: 0.95rem; line-height: 1.8; color: var(--text); margin-bottom: 25px; font-style: italic; }
+        .testimonial-author { display: flex; align-items: center; gap: 12px; }
+        .author-img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+        .author-info h4 { color: var(--white); font-size: 0.95rem; margin-bottom: 2px; }
+        .author-info p { color: var(--text-muted); font-size: 0.8rem; }
+
+        .instagram { padding: 80px 5%; background: var(--dark-light); }
+        .instagram-grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+        .instagram-item { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; cursor: pointer; }
+        .instagram-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+        .instagram-item:hover img { transform: scale(1.1); }
+        .instagram-overlay { position: absolute; inset: 0; background: rgba(255,107,0,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.4s; color: var(--white); }
+        .instagram-item:hover .instagram-overlay { opacity: 1; }
+        .instagram-overlay i { font-size: 1.8rem; margin-bottom: 8px; }
+        .instagram-overlay span { font-weight: 600; font-size: 0.85rem; }
+
+        .cta { padding: 100px 5%; text-align: center; position: relative; overflow: hidden; }
+        .cta-bg { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,107,0,0.1) 0%, rgba(0,0,0,0) 50%, rgba(0,212,255,0.05) 100%); }
+        .cta-content { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
+        .cta h2 { font-family: 'Oswald', sans-serif; font-size: clamp(2rem, 4vw, 3.5rem); color: var(--white); margin-bottom: 15px; text-transform: uppercase; }
+        .cta p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 30px; line-height: 1.8; }
+        .cta-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .cta-location { display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 0.95rem; margin-top: 20px; }
+        .cta-location a { color: var(--primary); text-decoration: none; }
+        .cta-location a:hover { text-decoration: underline; }
+
+        .footer { background: var(--dark-light); padding: 60px 5% 25px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .footer-grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 50px; margin-bottom: 40px; }
+        .footer-brand h3 { font-family: 'Oswald', sans-serif; font-size: 1.8rem; color: var(--white); margin-bottom: 15px; }
+        .footer-brand p { color: var(--text-muted); line-height: 1.8; margin-bottom: 20px; font-size: 0.9rem; }
+        .footer-brand .contact-info { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .footer-brand .contact-info a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; transition: color 0.3s; }
+        .footer-brand .contact-info a:hover { color: var(--primary); }
+        .social-links { display: flex; gap: 12px; }
+        .social-links a { width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: var(--text-muted); text-decoration: none; transition: all 0.3s; font-size: 1rem; }
+        .social-links a:hover { background: var(--primary); color: var(--white); transform: translateY(-3px); }
+        .footer-column h4 { color: var(--white); font-size: 1rem; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-column ul { list-style: none; }
+        .footer-column ul li { margin-bottom: 10px; }
+        .footer-column ul li a { color: var(--text-muted); text-decoration: none; transition: color 0.3s; font-size: 0.9rem; }
+        .footer-column ul li a:hover { color: var(--primary); }
+        .footer-bottom { max-width: 1400px; margin: 0 auto; padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; color: var(--text-muted); font-size: 0.85rem; flex-wrap: wrap; gap: 10px; }
+
+        .whatsapp-float { position: fixed; bottom: 25px; left: 25px; width: 55px; height: 55px; background: var(--whatsapp); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 1.6rem; text-decoration: none; box-shadow: 0 10px 30px rgba(37,211,102,0.4); z-index: 1000; transition: all 0.3s; animation: pulse-wa 2s infinite; }
+        .whatsapp-float:hover { transform: scale(1.1); background: #128C7E; }
+        @keyframes pulse-wa { 0%, 100% { box-shadow: 0 10px 30px rgba(37,211,102,0.4); } 50% { box-shadow: 0 10px 40px rgba(37,211,102,0.7); } }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 1200px) {
+            .categories-grid, .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+            .benefits-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 992px) {
+            .hero-grid { grid-template-columns: 1fr; text-align: center; }
+            .hero-content { order: 2; }
+            .hero-image { order: 1; max-width: 500px; margin: 0 auto; }
+            .hero-stats { justify-content: center; }
+            .hero-buttons { justify-content: center; }
+            .hero p { margin: 0 auto 30px; }
+            .hero-bg { display: none; }
+            .categories-grid, .gallery-grid, .benefits-grid, .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+            .instagram-grid { grid-template-columns: repeat(3, 1fr); }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .nav-links { display: none; }
+            .mobile-menu { display: block; }
+            .cart-sidebar { width: 100%; }
+        }
+        @media (max-width: 768px) {
+            .categories-grid, .gallery-grid, .benefits-grid, .testimonials-grid, .footer-grid { grid-template-columns: 1fr; }
+            .instagram-grid { grid-template-columns: repeat(2, 1fr); }
+            .gallery-header { flex-direction: column; align-items: flex-start; }
+            .floating-card { display: none; }
+            .whatsapp-float { width: 50px; height: 50px; font-size: 1.4rem; bottom: 20px; left: 20px; }
+            .logo img { height: 40px; }
+            .logo-text { font-size: 1.4rem; }
+        }
+        .catalogs-section { padding: 80px 5%; background: var(--dark); }
+        .catalogs-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .catalog-card { background: var(--gray); border-radius: 18px; padding: 35px 25px; text-align: center; text-decoration: none; border: 1px solid rgba(255,255,255,0.05); transition: all 0.4s; display: flex; flex-direction: column; align-items: center; }
+        .catalog-card:hover { transform: translateY(-8px); border-color: rgba(255,107,0,0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .catalog-icon { width: 60px; height: 60px; background: rgba(255,107,0,0.1); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--primary); margin-bottom: 18px; transition: all 0.3s; }
+        .catalog-card:hover .catalog-icon { background: var(--primary); color: var(--white); }
+        .catalog-card h3 { color: var(--white); font-size: 1.05rem; margin-bottom: 8px; font-weight: 600; }
+        .catalog-card p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 18px; line-height: 1.5; }
+        .catalog-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; background: var(--primary); color: var(--white); border-radius: 50px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s; }
+        .catalog-card:hover .catalog-btn { background: var(--primary-dark); }
+        @media (max-width: 992px) { .catalogs-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { .catalogs-grid { grid-template-columns: 1fr; } }
+
+
+        /* WhatsApp Modal */
+        .wa-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 5000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s; }
+        .wa-modal-overlay.active { opacity: 1; visibility: visible; }
+        .wa-modal { background: var(--gray); border-radius: 20px; padding: 40px; text-align: center; max-width: 400px; width: 90%; border: 1px solid rgba(255,255,255,0.1); transform: scale(0.9); transition: transform 0.3s; }
+        .wa-modal-overlay.active .wa-modal { transform: scale(1); }
+        .wa-modal-icon { width: 70px; height: 70px; background: var(--whatsapp); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 2rem; color: white; }
+        .wa-modal h3 { color: var(--white); font-size: 1.3rem; margin-bottom: 10px; }
+        .wa-modal p { color: var(--text-muted); margin-bottom: 20px; font-size: 0.95rem; }
+        .wa-number-box { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .wa-number-box span { color: var(--white); font-size: 1.4rem; font-weight: 700; font-family: 'Oswald', sans-serif; }
+        .wa-modal-btn { width: 100%; padding: 14px; border-radius: 12px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; }
+        .wa-btn-open { background: var(--whatsapp); color: white; }
+        .wa-btn-open:hover { background: #128C7E; }
+        .wa-btn-copy { background: rgba(255,255,255,0.1); color: var(--white); }
+        .wa-btn-copy:hover { background: rgba(255,255,255,0.2); }
+        .wa-modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+        .wa-modal-close:hover { color: var(--white); }
+
+    </style>
+</head>
+<body>
+
+    <div class="loader" id="loader"><div class="loader-spinner"></div></div>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771649387/Photoroom-20251123_215209030_blbzzk.png" alt="CiroSport Logo">
+                <span class="logo-text">CIRO<span>SPORT</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#categorias">Categorías</a></li>
+                <li><a href="#catalogos">Catálogos</a></li>
+                <li><a href="#camisetas">Camisetas</a></li>
+                <li><a href="#suplementos">Suplementos</a></li>
+                <li><a href="#oversize">Oversize</a></li>
+                <li><a href="#juegos">Juegos</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="btn-icon" onclick="toggleCart()">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+                <div class="mobile-menu"><i class="fas fa-bars"></i></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-bag"></i> Tu Carrito</h3>
+            <button class="cart-close" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty">
+                <i class="fas fa-shopping-bag"></i>
+                <p>Tu carrito está vacío</p>
+            </div>
+        </div>
+        <div class="cart-footer" id="cartFooter" style="display: none;">
+            <div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotal">₡0</span></div>
+            <div class="cart-total"><span>Total</span><span class="cart-total-price" id="cartTotal">₡0</span></div>
+            <button class="btn-cart-checkout" onclick="checkout()">
+                <i class="fas fa-mobile-alt"></i> Pagar con SINPE
+            </button>
+            <a href="https://wa.me/50670082741?text=Hola%20CiroSport%2C%20quiero%20consultar%20sobre%20los%20productos%20en%20mi%20carrito" class="btn-whatsapp-cart" target="_blank" id="cartWhatsApp">
+                <i class="fab fa-whatsapp"></i> Consultar por WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <section class="hero" id="inicio">
+        <div class="hero-bg"></div>
+        <div class="hero-grid">
+            <div class="hero-content">
+                <div class="badge"><i class="fas fa-fire"></i> CiroSport - Escazú Centro</div>
+                <h1>Potencia tu <span class="highlight">rendimiento</span></h1>
+                <p>Suplementos deportivos, camisetas olímpicas, ropa oversize y juegos deportivos. Todo en un solo lugar en Escazú Centro, Costa Rica.</p>
+                <div class="hero-stats">
+                    <div class="stat"><span class="stat-number" data-target="500">0</span><span class="stat-label">Clientes</span></div>
+                    <div class="stat"><span class="stat-number" data-target="50">0</span><span class="stat-label">Productos</span></div>
+                    <div class="stat"><span class="stat-number" data-target="100">0</span><span class="stat-label">% Calidad</span></div>
+                </div>
+                <div class="hero-buttons">
+                    <a href="#camisetas" class="btn btn-primary"><i class="fas fa-tshirt"></i> Ver Productos</a>
+                    <a href="#" class="btn btn-whatsapp" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&h=900&fit=crop" alt="Atleta">
+                <div class="floating-card card-1">
+                    <h4>Creatina Pro</h4>
+                    <p>Pureza 99.9%</p>
+                    <div class="price">₡17,500</div>
+                </div>
+                <div class="floating-card card-2">
+                    <h4>4.9/5</h4>
+                    <p>Clientes satisfechos</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="categories-section" id="categorias">
+        <div class="section-header reveal">
+            <span class="section-label">Explora</span>
+            <h2 class="section-title">Nuestras Categorías</h2>
+        </div>
+        <div class="categories-grid">
+            <div class="category-card reveal">
+                <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771965990/dc822db6d18892fe68d182003df68e05_16_n9vcgk.png" alt="Camisetas Olímpicas">
+                <div class="category-overlay">
+                    <h3>Camisetas Olímpicas</h3>
+                    <p>Desde ₡10,000</p>
+                    <div class="category-btns">
+                        <a href="#camisetas" class="btn-sm btn-sm-primary">Ver Galería</a>
+                        <a href="https://wa.me/50670082741?text=Hola%20CiroSport%2C%20quiero%20consultar%20sobre%20camisetas%20olimpicas" class="btn-sm btn-sm-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="category-card reveal">
+                <img src="https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=600&h=800&fit=crop" alt="Suplementos">
+                <div class="category-overlay">
+                    <h3>Suplementos</h3>
+                    <p>Proteínas, creatinas, pre-workout</p>
+                    <div class="category-btns">
+                        <a href="#suplementos" class="btn-sm btn-sm-primary">Ver Galería</a>
+                        <a href="#" class="btn-sm btn-sm-whatsapp" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="category-card reveal">
+                <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1779323787/84ec51e7070e2b49bdecc85222d5bd49_1_fe1kdt.png" alt="Oversize">
+                <div class="category-overlay">
+                    <h3>Oversize</h3>
+                    <p>Estilo urbano deportivo</p>
+                    <div class="category-btns">
+                        <a href="#oversize" class="btn-sm btn-sm-primary">Ver Galería</a>
+                        <a href="https://wa.me/50670082741?text=Hola%20CiroSport%2C%20quiero%20consultar%20sobre%20ropa%20oversize" class="btn-sm btn-sm-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="category-card reveal">
+                <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646079/Photoroom-20250224_235848_pillqf.png" alt="Juegos Deportivos">
+                <div class="category-overlay">
+                    <h3>Juegos Deportivos</h3>
+                    <p>Desde ₡50,000</p>
+                    <div class="category-btns">
+                        <a href="#juegos" class="btn-sm btn-sm-primary">Ver Galería</a>
+                        <a href="https://wa.me/50670082741?text=Hola%20CiroSport%2C%20quiero%20consultar%20sobre%20juegos%20deportivos" class="btn-sm btn-sm-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- CATALOGOS PDF -->
+    <section class="catalogs-section" id="catalogos">
+        <div class="section-header reveal">
+            <span class="section-label">Descargas</span>
+            <h2 class="section-title">Catálogos PDF</h2>
+            <p style="color: var(--text-muted); margin-top: 10px; font-size: 0.95rem;">Descargá nuestros catálogos completos con todos los productos y precios</p>
+        </div>
+        <div class="catalogs-grid">
+            <a href="https://drive.google.com/file/d/1JLKzZHRHjFCnQDvDyfyJtO33xNbinl7Q/view?usp=drivesdk" target="_blank" class="catalog-card reveal">
+                <div class="catalog-icon"><i class="fas fa-file-pdf"></i></div>
+                <h3>Catálogo General 2026</h3>
+                <p>Todos los productos CiroSport</p>
+                <span class="catalog-btn"><i class="fas fa-eye"></i> Ver en Drive</span>
+            </a>
+            <a href="https://drive.google.com/file/d/1n9pEk5Nxb2IP4Xq0Q1DbKzzeHE-UMwhd/view?usp=drivesdk" target="_blank" class="catalog-card reveal">
+                <div class="catalog-icon"><i class="fas fa-file-pdf"></i></div>
+                <h3>Catálogo de Ropa</h3>
+                <p>Camisetas, oversize y más</p>
+                <span class="catalog-btn"><i class="fas fa-eye"></i> Ver en Drive</span>
+            </a>
+            <a href="https://drive.google.com/file/d/1_Ss99-Sj-9DNzsRMhBvOe8XMlVebz5xn/view?usp=drivesdk" target="_blank" class="catalog-card reveal">
+                <div class="catalog-icon"><i class="fas fa-file-pdf"></i></div>
+                <h3>Catálogo de Suplementos</h3>
+                <p>Proteínas, creatinas y vitaminas</p>
+                <span class="catalog-btn"><i class="fas fa-eye"></i> Ver en Drive</span>
+            </a>
+            <a href="https://drive.google.com/file/d/1YoHdMN-UE7mhjZHf4H-nXe5R5rGZHdzm/view?usp=drivesdk" target="_blank" class="catalog-card reveal">
+                <div class="catalog-icon"><i class="fas fa-file-pdf"></i></div>
+                <h3>Catálogo de Juegos</h3>
+                <p>Juegos deportivos y accesorios</p>
+                <span class="catalog-btn"><i class="fas fa-eye"></i> Ver en Drive</span>
+            </a>
+        </div>
+    </section>
+
+</section>
+
+    <!-- CAMISETAS OLIMPICAS -->
+    <section class="category-gallery" id="camisetas">
+        <div class="gallery-header reveal">
+            <div class="gallery-header-left">
+                <div class="gallery-icon"><i class="fas fa-tshirt"></i></div>
+                <div class="gallery-title-group">
+                    <h2>Camisetas Olímpicas</h2>
+                    <p>Calidad premium, diseño deportivo</p>
+                </div>
+            </div>
+            <a href="https://wa.me/50670082741?text=Hola%20CiroSport%2C%20quiero%20consultar%20sobre%20camisetas%20olimpicas" class="gallery-whatsapp" target="_blank">
+                <i class="fab fa-whatsapp"></i> Consultar
+            </a>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771965990/dc822db6d18892fe68d182003df68e05_16_n9vcgk.png" alt="Camiseta Olímpica">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Olímpica #1</h4>
+                    <p>Diseño deportivo premium</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Olímpica #1', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771965990/dc822db6d18892fe68d182003df68e05_16_n9vcgk.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771965956/dc822db6d18892fe68d182003df68e05_12_nluswt.png" alt="Camiseta Olímpica">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Olímpica #2</h4>
+                    <p>Estilo clásico deportivo</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Olímpica #2', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771965956/dc822db6d18892fe68d182003df68e05_12_nluswt.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771965955/dc822db6d18892fe68d182003df68e05_15_uwqohl.png" alt="Camiseta Olímpica">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Olímpica #3</h4>
+                    <p>Edición especial</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Olímpica #3', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771965955/dc822db6d18892fe68d182003df68e05_15_uwqohl.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771965954/dc822db6d18892fe68d182003df68e05_13_g7m9pa.png" alt="Camiseta Olímpica">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Olímpica #4</h4>
+                    <p>Diseño moderno</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Olímpica #4', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771965954/dc822db6d18892fe68d182003df68e05_13_g7m9pa.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771965931/dc822db6d18892fe68d182003df68e05_17_dpb95k.png" alt="Camiseta Olímpica">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Olímpica #5</h4>
+                    <p>Estilo urbano</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Olímpica #5', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771965931/dc822db6d18892fe68d182003df68e05_17_dpb95k.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771965901/dc822db6d18892fe68d182003df68e05_19_scdrmm.png" alt="Camiseta Olímpica">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Olímpica #6</h4>
+                    <p>Edición limitada</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Olímpica #6', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771965901/dc822db6d18892fe68d182003df68e05_19_scdrmm.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771965899/dc822db6d18892fe68d182003df68e05_20_zt979e.png" alt="Camiseta Olímpica">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Olímpica #7</h4>
+                    <p>Diseño premium</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Olímpica #7', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771965899/dc822db6d18892fe68d182003df68e05_20_zt979e.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771965900/dc822db6d18892fe68d182003df68e05_21_kehvre.png" alt="Camiseta Olímpica">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Olímpica #8</h4>
+                    <p>Estilo atleta</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Olímpica #8', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771965900/dc822db6d18892fe68d182003df68e05_21_kehvre.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771965897/dc822db6d18892fe68d182003df68e05_22_diwlrv.png" alt="Camiseta Olímpica">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Olímpica #9</h4>
+                    <p>Diseño exclusivo</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Olímpica #9', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771965897/dc822db6d18892fe68d182003df68e05_22_diwlrv.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771965892/dc822db6d18892fe68d182003df68e05_23_pzoq8e.png" alt="Camiseta Olímpica">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Olímpica #10</h4>
+                    <p>Calidad pro</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Olímpica #10', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771965892/dc822db6d18892fe68d182003df68e05_23_pzoq8e.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771965867/IMG-20260224-WA0039_bwv62w.jpg" alt="Camiseta Olímpica">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Olímpica #11</h4>
+                    <p>Modelo nuevo</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Olímpica #11', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771965867/IMG-20260224-WA0039_bwv62w.jpg')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771965863/IMG-20260224-WA0040_s6dbw3.jpg" alt="Camiseta Olímpica">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Olímpica #12</h4>
+                    <p>Edición 2026</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Olímpica #12', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771965863/IMG-20260224-WA0040_s6dbw3.jpg')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CAMISETAS DEPORTIVAS -->
+    <section class="category-gallery" id="camisetas-deportivas">
+        <div class="gallery-header reveal">
+            <div class="gallery-header-left">
+                <div class="gallery-icon"><i class="fas fa-running"></i></div>
+                <div class="gallery-title-group">
+                    <h2>Camisetas Deportivas</h2>
+                    <p>Tecnología Dry-Fit, máximo rendimiento</p>
+                </div>
+            </div>
+            <a href="https://wa.me/50670082741?text=Hola%20CiroSport%2C%20quiero%20consultar%20sobre%20camisetas%20deportivas" class="gallery-whatsapp" target="_blank">
+                <i class="fab fa-whatsapp"></i> Consultar
+            </a>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646007/Photoroom-20250301_223811_mpctyd.png" alt="Camiseta Deportiva">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Deportiva #1</h4>
+                    <p>Dry-Fit premium</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Deportiva #1', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771646007/Photoroom-20250301_223811_mpctyd.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771645955/Photoroom-20250301_223509_f8pykj.png" alt="Camiseta Deportiva">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Deportiva #2</h4>
+                    <p>Estilo atleta profesional</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Deportiva #2', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771645955/Photoroom-20250301_223509_f8pykj.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646038/IMG_20250404_210953_2_w6y9tr.png" alt="Camiseta Deportiva">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Deportiva #3</h4>
+                    <p>Diseño moderno</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Deportiva #3', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771646038/IMG_20250404_210953_2_w6y9tr.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771645970/Photoroom-20250301_223643_i8npdv.png" alt="Camiseta Deportiva">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Deportiva #4</h4>
+                    <p>Edición especial</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Deportiva #4', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771645970/Photoroom-20250301_223643_i8npdv.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771645981/Photoroom-20250301_223716_fgxqr2.png" alt="Camiseta Deportiva">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Camiseta Deportiva #5</h4>
+                    <p>Calidad pro</p>
+                    <div class="gallery-item-price">₡10,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Camiseta Deportiva #5', 10000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771645981/Photoroom-20250301_223716_fgxqr2.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SUPLEMENTOS -->
+    <section class="category-gallery" id="suplementos">
+        <div class="gallery-header reveal">
+            <div class="gallery-header-left">
+                <div class="gallery-icon"><i class="fas fa-flask"></i></div>
+                <div class="gallery-title-group">
+                    <h2>Suplementos</h2>
+                    <p>Proteínas, creatinas y más</p>
+                </div>
+            </div>
+            <a href="https://wa.me/50670082741?text=Hola%20CiroSport%2C%20quiero%20consultar%20sobre%20suplementos" class="gallery-whatsapp" target="_blank">
+                <i class="fab fa-whatsapp"></i> Consultar Suplementos
+            </a>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771645882/IMG_20250531_150610_a8hlye.png" alt="Creatina">
+                    <span class="gallery-item-badge" style="background: var(--primary); color: var(--white);">Top Venta</span>
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Creatina Monohidratada</h4>
+                    <p>Pureza 99.9% - 300g</p>
+                    <div class="gallery-item-price">₡17,500</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Creatina Monohidratada', 17500, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771645882/IMG_20250531_150610_a8hlye.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771645871/IMG_20250530_124703_acwhpd.png" alt="Creatina">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Creatina Premium</h4>
+                    <p>Micronizada - 500g</p>
+                    <div class="gallery-item-price">₡17,500</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Creatina Premium', 17500, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771645871/IMG_20250530_124703_acwhpd.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646321/IMG_20250604_154551_leznbs.png" alt="Creatina">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Creatina Pro Series</h4>
+                    <p>Ultra pura - 300g</p>
+                    <div class="gallery-item-price">₡17,500</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Creatina Pro Series', 17500, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771646321/IMG_20250604_154551_leznbs.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646188/1754318027391_xckwfg.png" alt="Creatina">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Creatina Elite</h4>
+                    <p>Fórmula avanzada</p>
+                    <div class="gallery-item-price">₡17,500</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Creatina Elite', 17500, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771646188/1754318027391_xckwfg.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646164/IMG-20250826-WA0008_ezryvm.png" alt="Proteína">
+                    <span class="gallery-item-badge" style="background: var(--accent); color: var(--dark);">Nuevo</span>
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Whey Protein</h4>
+                    <p>Proteína de suero - 2lb</p>
+                    <div class="gallery-item-price">₡50,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Whey Protein', 50000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771646164/IMG-20250826-WA0008_ezryvm.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646285/IMG-20250620-WA0021_fy6e0u.png" alt="Proteína">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Proteína Isolate</h4>
+                    <p>100% aislado - 2lb</p>
+                    <div class="gallery-item-price">₡50,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Proteina Isolate', 50000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771646285/IMG-20250620-WA0021_fy6e0u.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646251/IMG-20250620-WA0018_iinpf8.png" alt="Proteína">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Proteína Premium</h4>
+                    <p>Concentrada - 2lb</p>
+                    <div class="gallery-item-price">₡50,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Proteina Premium', 50000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771646251/IMG-20250620-WA0018_iinpf8.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646205/IMG-20250826-WA0230_molicz.png" alt="Proteína">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Proteína Mass Gainer</h4>
+                    <p>Ganancia muscular - 5lb</p>
+                    <div class="gallery-item-price">₡50,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Proteina Mass Gainer', 50000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771646205/IMG-20250826-WA0230_molicz.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OVERSIZE -->
+    <section class="category-gallery" id="oversize">
+        <div class="gallery-header reveal">
+            <div class="gallery-header-left">
+                <div class="gallery-icon"><i class="fas fa-expand"></i></div>
+                <div class="gallery-title-group">
+                    <h2>Oversize</h2>
+                    <p>Estilo urbano, corte amplio</p>
+                </div>
+            </div>
+            <a href="https://wa.me/50670082741?text=Hola%20CiroSport%2C%20quiero%20consultar%20sobre%20ropa%20oversize" class="gallery-whatsapp" target="_blank">
+                <i class="fab fa-whatsapp"></i> Consultar Oversize
+            </a>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1779323787/84ec51e7070e2b49bdecc85222d5bd49_1_fe1kdt.png" alt="Oversize">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Oversize #1</h4>
+                    <p>Corte amplio, estilo urbano</p>
+                    <div class="gallery-item-price">₡12,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Oversize #1', 12000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1779323787/84ec51e7070e2b49bdecc85222d5bd49_1_fe1kdt.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1779323786/ec1893da5cfb514219e217957ed98733_2_nvj1xk.png" alt="Oversize">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Oversize #2</h4>
+                    <p>Diseño streetwear</p>
+                    <div class="gallery-item-price">₡12,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Oversize #2', 12000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1779323786/ec1893da5cfb514219e217957ed98733_2_nvj1xk.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1779323785/ec1893da5cfb514219e217957ed98733_3_ngrds7.png" alt="Oversize">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Oversize #3</h4>
+                    <p>Estilo moderno</p>
+                    <div class="gallery-item-price">₡12,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Oversize #3', 12000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1779323785/ec1893da5cfb514219e217957ed98733_3_ngrds7.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1779323783/ec1893da5cfb514219e217957ed98733_4_bnfijf.png" alt="Oversize">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Oversize #4</h4>
+                    <p>Edición limitada</p>
+                    <div class="gallery-item-price">₡12,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Oversize #4', 12000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1779323783/ec1893da5cfb514219e217957ed98733_4_bnfijf.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1779323782/Photoroom-20260514_125308223_3_klneuz.png" alt="Oversize">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Oversize #5</h4>
+                    <p>Diseño exclusivo</p>
+                    <div class="gallery-item-price">₡12,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Oversize #5', 12000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1779323782/Photoroom-20260514_125308223_3_klneuz.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JUEGOS DEPORTIVOS -->
+    <section class="category-gallery" id="juegos">
+        <div class="gallery-header reveal">
+            <div class="gallery-header-left">
+                <div class="gallery-icon"><i class="fas fa-futbol"></i></div>
+                <div class="gallery-title-group">
+                    <h2>Juegos Deportivos</h2>
+                    <p>Equipamiento para divertirse</p>
+                </div>
+            </div>
+            <a href="https://wa.me/50670082741?text=Hola%20CiroSport%2C%20quiero%20consultar%20sobre%20juegos%20deportivos" class="gallery-whatsapp" target="_blank">
+                <i class="fab fa-whatsapp"></i> Consultar Juegos
+            </a>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646079/Photoroom-20250224_235848_pillqf.png" alt="Juego Deportivo">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Juego Deportivo #1</h4>
+                    <p>Diversión garantizada</p>
+                    <div class="gallery-item-price">₡20,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Juego Deportivo #1', 20000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771646079/Photoroom-20250224_235848_pillqf.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646193/Photoroom-20250224_233715_elc9du.png" alt="Juego Deportivo">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Juego Deportivo #2</h4>
+                    <p>Para toda la familia</p>
+                    <div class="gallery-item-price">₡20,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Juego Deportivo #2', 20000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771646193/Photoroom-20250224_233715_elc9du.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646017/Photoroom-20250225_000142_luy730.png" alt="Juego Deportivo">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Juego Deportivo #3</h4>
+                    <p>Actividad al aire libre</p>
+                    <div class="gallery-item-price">₡20,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Juego Deportivo #3', 20000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771646017/Photoroom-20250225_000142_luy730.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646019/Photoroom-20250224_235953_lzcedw.png" alt="Juego Deportivo">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Juego Deportivo #4</h4>
+                    <p>Entretenimiento deportivo</p>
+                    <div class="gallery-item-price">₡20,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Juego Deportivo #4', 20000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771646019/Photoroom-20250224_235953_lzcedw.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646052/Photoroom-20250225_000044_rakgft.png" alt="Juego Deportivo">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Juego Deportivo #5</h4>
+                    <p>Diversión en grupo</p>
+                    <div class="gallery-item-price">₡20,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Juego Deportivo #5', 20000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771646052/Photoroom-20250225_000044_rakgft.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646092/Photoroom-20250224_235917_llo27n.png" alt="Juego Deportivo">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Juego Deportivo #6</h4>
+                    <p>Competencia amistosa</p>
+                    <div class="gallery-item-price">₡20,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Juego Deportivo #6', 20000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771646092/Photoroom-20250224_235917_llo27n.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646178/Photoroom-20250224_233647_nnihan.png" alt="Juego Deportivo">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Juego Deportivo #7</h4>
+                    <p>Actividad recreativa</p>
+                    <div class="gallery-item-price">₡20,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Juego Deportivo #7', 20000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771646178/Photoroom-20250224_233647_nnihan.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-item reveal">
+                <div class="gallery-item-img">
+                    <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646167/Photoroom-20250224_233613_ryjvcd.png" alt="Juego Deportivo">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>Juego Deportivo #8</h4>
+                    <p>Juego de precisión</p>
+                    <div class="gallery-item-price">₡20,000</div>
+                    <div class="gallery-item-actions">
+                        <button class="btn-add-cart" onclick="addToCart('Juego Deportivo #8', 20000, 'https://res.cloudinary.com/dlz6uc574/image/upload/v1771646167/Photoroom-20250224_233613_ryjvcd.png')">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                        </button>
+                        <a href="#" class="btn-gallery-wa" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="benefits" id="beneficios">
+        <div class="section-header reveal">
+            <span class="section-label">Por qué elegirnos</span>
+            <h2 class="section-title">Beneficios Exclusivos</h2>
+        </div>
+        <div class="benefits-grid">
+            <div class="benefit-card reveal">
+                <div class="benefit-icon"><i class="fas fa-gem"></i></div>
+                <h3>Calidad Premium</h3>
+                <p>Productos seleccionados para máximo rendimiento y durabilidad.</p>
+            </div>
+            <div class="benefit-card reveal">
+                <div class="benefit-icon"><i class="fas fa-truck-fast"></i></div>
+                <h3>Envíos Nacionales</h3>
+                <p>Entrega rápida y segura a todo Costa Rica.</p>
+            </div>
+            <div class="benefit-card reveal">
+                <div class="benefit-icon"><i class="fas fa-headset"></i></div>
+                <h3>Atención Personalizada</h3>
+                <p>Asesoramiento por WhatsApp las 24 horas.</p>
+            </div>
+            <div class="benefit-card reveal">
+                <div class="benefit-icon"><i class="fas fa-mobile-alt"></i></div>
+                <h3>Pago SINPE</h3>
+                <p>Pagos rápidos y seguros al 7008-2741.</p>
+            </div>
+            <div class="benefit-card reveal">
+                <div class="benefit-icon"><i class="fas fa-rotate-left"></i></div>
+                <h3>Garantía Total</h3>
+                <p>Satisfacción garantizada o devolución en 30 días.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <div class="section-header reveal">
+            <span class="section-label">Testimonios</span>
+            <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card reveal">
+                <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p class="testimonial-text">"La calidad de las camisetas olímpicas es increíble. He comprado varias y todas superan mis expectativas. El pago por SINPE fue súper fácil."</p>
+                <div class="testimonial-author">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" alt="María" class="author-img">
+                    <div class="author-info"><h4>María González</h4><p>Escazú Centro</p></div>
+                </div>
+            </div>
+            <div class="testimonial-card reveal">
+                <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p class="testimonial-text">"La creatina que compré es pura y se disuelve perfectamente. La atención por WhatsApp es excelente, me respondieron al instante."</p>
+                <div class="testimonial-author">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" alt="Carlos" class="author-img">
+                    <div class="author-info"><h4>Carlos Rodríguez</h4><p>San José</p></div>
+                </div>
+            </div>
+            <div class="testimonial-card reveal">
+                <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p class="testimonial-text">"Los juegos deportivos son geniales para reuniones familiares. Envío rápido y el producto llegó en perfecto estado. 100% recomendado."</p>
+                <div class="testimonial-author">
+                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop" alt="Ana" class="author-img">
+                    <div class="author-info"><h4>Ana Martínez</h4><p>Heredia</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="instagram">
+        <div class="section-header reveal">
+            <span class="section-label">Síguenos</span>
+            <h2 class="section-title">@tshir_t31</h2>
+        </div>
+        <div class="instagram-grid">
+            <div class="instagram-item reveal">
+                <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771965990/dc822db6d18892fe68d182003df68e05_16_n9vcgk.png" alt="Instagram">
+                <div class="instagram-overlay"><i class="fab fa-instagram"></i><span>Ver más</span></div>
+            </div>
+            <div class="instagram-item reveal">
+                <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771645882/IMG_20250531_150610_a8hlye.png" alt="Instagram">
+                <div class="instagram-overlay"><i class="fab fa-instagram"></i><span>Ver más</span></div>
+            </div>
+            <div class="instagram-item reveal">
+                <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1779323787/84ec51e7070e2b49bdecc85222d5bd49_1_fe1kdt.png" alt="Instagram">
+                <div class="instagram-overlay"><i class="fab fa-instagram"></i><span>Ver más</span></div>
+            </div>
+            <div class="instagram-item reveal">
+                <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646079/Photoroom-20250224_235848_pillqf.png" alt="Instagram">
+                <div class="instagram-overlay"><i class="fab fa-instagram"></i><span>Ver más</span></div>
+            </div>
+            <div class="instagram-item reveal">
+                <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646007/Photoroom-20250301_223811_mpctyd.png" alt="Instagram">
+                <div class="instagram-overlay"><i class="fab fa-instagram"></i><span>Ver más</span></div>
+            </div>
+            <div class="instagram-item reveal">
+                <img src="https://res.cloudinary.com/dlz6uc574/image/upload/v1771646164/IMG-20250826-WA0008_ezryvm.png" alt="Instagram">
+                <div class="instagram-overlay"><i class="fab fa-instagram"></i><span>Ver más</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta" id="contacto">
+        <div class="cta-bg"></div>
+        <div class="cta-content reveal">
+            <h2>Empieza a entrenar con estilo</h2>
+            <p>Visítanos en Escazú Centro o contáctanos por WhatsApp. Suplementos, camisetas olímpicas, oversize y juegos deportivos te esperan.</p>
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-whatsapp" onclick="openWaModal(event)">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </a>
+                <a href="https://waze.com/ul?q=Escaz%C3%BA%20Centro%2C%20Costa%20Rica" class="btn btn-sinpe" target="_blank">
+                    <i class="fas fa-map-marker-alt"></i> Cómo Llegar
+                </a>
+            </div>
+            <div class="cta-location">
+                <i class="fas fa-map-pin"></i> Escazú Centro, Costa Rica · 
+                <a href="mailto:paul.angulo2015@gmail.com">paul.angulo2015@gmail.com</a> · 
+                SINPE: 7008-2741
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h3>CIROSPORT.</h3>
+                <p>Tu tienda deportiva en Escazú Centro. Suplementos, camisetas olímpicas, ropa oversize y juegos deportivos de alta calidad.</p>
+                <div class="contact-info">
+                    <a href="#" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i> 7008-2741</a>
+                    <a href="mailto:paul.angulo2015@gmail.com"><i class="fas fa-envelope"></i> paul.angulo2015@gmail.com</a>
+                    <a href="https://waze.com/ul?q=Escaz%C3%BA%20Centro%2C%20Costa%20Rica" target="_blank"><i class="fas fa-map-marker-alt"></i> Escazú Centro, Costa Rica</a>
+                    <a href="#"><i class="fas fa-mobile-alt"></i> SINPE: 7008-2741</a>
+                </div>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/tshir_t31" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#" onclick="openWaModal(event)"><i class="fab fa-whatsapp"></i></a>
+                    <a href="mailto:paul.angulo2015@gmail.com"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h4>Productos</h4>
+                <ul>
+                    <li><a href="#camisetas">Camisetas Olímpicas</a></li>
+                    <li><a href="#camisetas-deportivas">Camisetas Deportivas</a></li>
+                    <li><a href="#suplementos">Suplementos</a></li>
+                    <li><a href="#oversize">Oversize</a></li>
+                    <li><a href="#juegos">Juegos Deportivos</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Información</h4>
+                <ul>
+                    <li><a href="#">Nosotros</a></li>
+                    <li><a href="#">Envíos</a></li>
+                    <li><a href="#">Devoluciones</a></li>
+                    <li><a href="#">Términos</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Contacto</h4>
+                <ul>
+                    <li><a href="#" onclick="openWaModal(event)">WhatsApp</a></li>
+                    <li><a href="mailto:paul.angulo2015@gmail.com">Email</a></li>
+                    <li><a href="https://waze.com/ul?q=Escaz%C3%BA%20Centro%2C%20Costa%20Rica" target="_blank">Ubicación Waze</a></li>
+                    <li><a href="https://www.instagram.com/tshir_t31" target="_blank">Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>2026 CiroSport. Todos los derechos reservados.</p>
+            <p>Escazú Centro, Costa Rica · SINPE 7008-2741</p>
+        </div>
+    </footer>
+
+    <a href="#" class="whatsapp-float" onclick="openWaModal(event)">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script>
+        // Cart State
+        let cart = [];
+        const WA_NUMBER = '50670082741';
+
+        // Loader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 500);
+        });
+
+        // Navbar scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+
+        // WhatsApp Modal Functions
+        function openWaModal(e) {
+            if(e) e.preventDefault();
+            document.getElementById('waModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            // Also try to open WhatsApp directly
+            window.open('https://wa.me/50670082741', '_blank');
+        }
+        function closeWaModal(e) {
+            if(e && e.target !== e.currentTarget) return;
+            document.getElementById('waModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        function copyWaNumber() {
+            navigator.clipboard.writeText('70082741').then(() => {
+                showToast('Número 7008-2741 copiado. Abrí WhatsApp y pegalo.');
+                closeWaModal();
+            }).catch(() => {
+                showToast('Número: 7008-2741');
+            });
+        }
+
+        // Cart Functions
+        function toggleCart() {
+            const overlay = document.getElementById('cartOverlay');
+            const sidebar = document.getElementById('cartSidebar');
+            overlay.classList.toggle('active');
+            sidebar.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+        }
+
+        function formatPrice(price) {
+            return '₡' + price.toLocaleString('es-CR');
+        }
+
+        function addToCart(name, price, image) {
+            const existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.qty++;
+            } else {
+                cart.push({ name, price, image, qty: 1 });
+            }
+            updateCart();
+            showToast(`${name} agregado al carrito`);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function updateQty(index, change) {
+            cart[index].qty += change;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById('cartItems');
+            const cartCount = document.getElementById('cartCount');
+            const cartFooter = document.getElementById('cartFooter');
+            const cartSubtotal = document.getElementById('cartSubtotal');
+            const cartTotal = document.getElementById('cartTotal');
+            const cartWhatsApp = document.getElementById('cartWhatsApp');
+
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            cartCount.textContent = totalItems;
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="cart-empty">
+                        <i class="fas fa-shopping-bag"></i>
+                        <p>Tu carrito está vacío</p>
+                    </div>
+                `;
+                cartFooter.style.display = 'none';
+            } else {
+                cartItems.innerHTML = cart.map((item, index) => `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="${item.name}" class="cart-item-img">
+                        <div class="cart-item-info">
+                            <div class="cart-item-title">${item.name}</div>
+                            <div class="cart-item-price">${formatPrice(item.price)}</div>
+                            <div class="cart-item-qty">
+                                <button class="qty-btn" onclick="updateQty(${index}, -1)"><i class="fas fa-minus"></i></button>
+                                <span>${item.qty}</span>
+                                <button class="qty-btn" onclick="updateQty(${index}, 1)"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                        <button class="cart-item-remove" onclick="removeFromCart(${index})"><i class="fas fa-trash"></i></button>
+                    </div>
+                `).join('');
+                cartFooter.style.display = 'block';
+
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+                cartSubtotal.textContent = formatPrice(subtotal);
+                cartTotal.textContent = formatPrice(subtotal);
+
+                const itemsText = cart.map(item => `${item.qty}x ${item.name} (${formatPrice(item.price)})`).join('%0A');
+                const totalText = `Total: ${formatPrice(subtotal)}`;
+                cartWhatsApp.href = `https://wa.me/${WA_NUMBER}?text=`Hola%20CiroSport%2C%20quiero%20consultar%20sobre%20estos%20productos%20de%20mi%20carrito:%0A${itemsText}%0A%0A${totalText}`;
+            }
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                showToast('Tu carrito está vacío', 'error');
+                return;
+            }
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            showToast(`Redirigiendo a SINPE... Total: ${formatPrice(subtotal)}`);
+            setTimeout(() => {
+                const itemsText = cart.map(item => `${item.qty}x ${item.name}`).join('%0A');
+                const totalText = `Total: ${formatPrice(subtotal)}`;
+                const sinpeMsg = `Hola CiroSport, quiero pagar por SINPE estos productos:%0A${itemsText}%0A%0A${totalText}`;
+                window.open(`https://wa.me/${WA_NUMBER}?text=`${sinpeMsg}`, '_blank');
+            }, 1500);
+        }
+
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            const color = type === 'success' ? 'var(--success)' : '#ff4444';
+            toast.innerHTML = `<i class="fas ${icon}" style="color: ${color}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Scroll reveal
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // Counter animation
+        const counters = document.querySelectorAll('.stat-number');
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = parseInt(entry.target.getAttribute('data-target'));
+                    const duration = 2000;
+                    const increment = target / (duration / 16);
+                    let current = 0;
+                    const updateCounter = () => {
+                        current += increment;
+                        if (current < target) {
+                            entry.target.textContent = Math.floor(current) + '+';
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            entry.target.textContent = target + '+';
+                        }
+                    };
+                    updateCounter();
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        counters.forEach(counter => counterObserver.observe(counter));
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Parallax hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const heroImage = document.querySelector('.hero-image');
+            if (heroImage && scrolled < window.innerHeight) {
+                heroImage.style.transform = `translateY(${scrolled * 0.3}px)`;
+            }
+        });
+    </script>
+
+    <!-- WhatsApp Fallback Modal -->
+    <div class="wa-modal-overlay" id="waModal" onclick="closeWaModal(event)">
+        <button class="wa-modal-close" onclick="closeWaModal()"><i class="fas fa-times"></i></button>
+        <div class="wa-modal">
+            <div class="wa-modal-icon"><i class="fab fa-whatsapp"></i></div>
+            <h3>Contactar por WhatsApp</h3>
+            <p>Si el link no abre automáticamente, copiá el número o abrí WhatsApp manualmente.</p>
+            <div class="wa-number-box">
+                <i class="fab fa-whatsapp" style="color: var(--whatsapp); font-size: 1.5rem;"></i>
+                <span>7008-2741</span>
+            </div>
+            <a href="https://wa.me/50670082741" class="wa-modal-btn wa-btn-open" target="_blank" onclick="closeWaModal()">
+                <i class="fab fa-whatsapp"></i> Abrir WhatsApp
+            </a>
+            <button class="wa-modal-btn wa-btn-copy" onclick="copyWaNumber()">
+                <i class="fas fa-copy"></i> Copiar Número
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>
